@@ -1,0 +1,25 @@
+
+CREATE TABLE user(
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL);
+
+
+CREATE TABLE events(
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    event_date TIMESTAMP NOT NULL,        -- дата и время события
+    description TEXT,
+    location TEXT,                        -- можно заменить на геоданные
+    image_url VARCHAR(512),               -- опционально
+    notification_enabled BOOLEAN DEFAULT FALSE,
+    notification_time TIMESTAMP);
+
+
+CREATE TABLE holidays(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    date DATE NOT NULL,                   
+    description TEXT);
