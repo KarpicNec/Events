@@ -9,7 +9,7 @@ def get_connection():
     conn.execute("PRAGMA foreign_keys = ON;")
     return conn
 
-# ---- Операции с пользователями (минимум для авторизации) ----
+# операции с пользователями 
 
 def create_user(username, email, password_hash):
     with get_connection() as conn:
