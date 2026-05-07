@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends, Request, status
 from starlette.middleware.sessions import SessionMiddleware   
 from pydantic import BaseModel, Field, field_validator, ValidationInfo
+from pydantic import ConfigDict
 from passlib.context import CryptContext
 from typing import Optional
 from datetime import datetime
@@ -10,7 +11,7 @@ app = FastAPI(title="Календарь событий API", version="1.0")
 app.add_middleware(SessionMiddleware, secret_key="supersecretkey_for_dev")
 
 # Хэширование паролей
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
@@ -38,7 +39,7 @@ def get_current_admin(current_user=Depends(get_current_user)):
 
 class UserRegister(BaseModel):
     username: str = Field(..., min_length=3, max_length=50)
-    email: str = Field(..., pattern=r"^\S+@\S+\.\S+$")
+    email: str = Field(..., pattern=r"^\S+@\S+\.\S+$", example="user@example.com")
     password: str = Field(..., min_length=6)
 
 class UserLogin(BaseModel):
@@ -105,9 +106,7 @@ class EventOut(BaseModel):
     image_url: Optional[str] = None
     notification_enabled: bool
     notification_time: Optional[datetime] = None
-
-    class Config:
-        from_attributes = True   # для совместимости с row
+    model_config = ConfigDict(from_attributes=True)
 
 class HolidayCreate(BaseModel):
     name: str
